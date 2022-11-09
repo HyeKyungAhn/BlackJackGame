@@ -1,45 +1,32 @@
 import java.util.*;
 
 public class Player extends Role{
-    private static List<Card> cards;
-    private static int count;
-    private static int money = 0;
-    private static int betMoney = 0;
-    private static boolean insured = false;
-    private static boolean doubleDown;
-    private static boolean takeEvenMoney;
-    private static boolean firstTurnBJ;
-    private static boolean blackJack;
+    private List<Card> cards;
+    private int count;
+    private int money;
+    private int betMoney = 0;
+    private boolean insured = false;
+    private boolean doubleDown;
+    private boolean EvenMoney;
+    private boolean firstTurnBJ;
+    private boolean blackJack;
 
-
-    private Player(){
+    Player(){
         money = 1000;
         cards = new ArrayList<>();
     }
 
-    public static int getCount() {
-        return count;
-    }
+    public int getCount() { return count; }
 
-    public static void setCount(int count) {
-        Player.count = count;
-    }
+    public void setCount(int count) { this.count = count; }
 
-    public static int getMoney() {
-        return money;
-    }
+    public int getMoney() { return money; }
 
-    public static int getBetMoney() {
-        return betMoney;
-    }
+    public int getBetMoney() { return betMoney; }
 
-    public static boolean isInsured() {
-        return insured;
-    }
+    public boolean isInsured() { return insured; }
 
-    public static void setInsured(boolean insured) {
-        Player.insured = insured;
-    }
+    public void setInsured(boolean insured) { this.insured = insured; }
 
     public static boolean isDoubleDown() { return doubleDown; }
 
@@ -47,32 +34,28 @@ public class Player extends Role{
         Player.doubleDown = doubleDown;
     }
 
-    public static boolean isTakeEvenMoney() {
-        return takeEvenMoney;
+    public boolean isEvenMoney() {
+        return EvenMoney;
     }
 
-    public static void setTakeEvenMoney(boolean takeEvenMoney) {
-        Player.takeEvenMoney = takeEvenMoney;
+    public void setEvenMoney(boolean EvenMoney) {
+        this.EvenMoney = EvenMoney;
     }
 
-    public static boolean isFirstTurnBJ() {
+    public boolean isFirstTurnBJ() {
         return firstTurnBJ;
     }
 
-    public static void setFirstTurnBJ(boolean firstTurnBJ) {
-        Player.firstTurnBJ = firstTurnBJ;
+    public void setFirstTurnBJ(boolean firstTurnBJ) {
+        this.firstTurnBJ = firstTurnBJ;
     }
 
-    public static boolean isBlackJack() {
+    public boolean isBlackJack() {
         return blackJack;
     }
 
-    public static void setBlackJack(boolean blackJack) {
-        Player.blackJack = blackJack;
-    }
-
-    public static Player playerEnter(){
-        return new Player();
+    public void setBlackJack(boolean blackJack) {
+        this.blackJack = blackJack;
     }
 
     @Override
@@ -95,7 +78,7 @@ public class Player extends Role{
         insured = false;
         count = 0;
         doubleDown = false;
-        takeEvenMoney = false;
+        EvenMoney = false;
         firstTurnBJ = false;
         blackJack = false;
     }
@@ -125,7 +108,7 @@ public class Player extends Role{
                         continue;
                     }
                     money -= betMoney;
-                    Player.betMoney = betMoney;
+                    this.betMoney = betMoney;
                     break;
                 } else {
                     System.out.println("최소, 최대 베팅 금액을 다시 한 번 확인해주세요.");

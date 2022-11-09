@@ -8,7 +8,7 @@ public class Deck {
     static final int NUMBER_OF_PACK = 4;
     List<Card> deck = new ArrayList<>(suitSymbols.length * pipsAndCourts.length * NUMBER_OF_PACK);
 
-    private Deck(){
+    Deck(){
         generateDeck();
         shuffle();
     }
@@ -22,10 +22,6 @@ public class Deck {
                 }
             }
         }
-    }
-
-    public static Deck getDeck(){
-        return new Deck();
     }
 
     public void shuffle(){

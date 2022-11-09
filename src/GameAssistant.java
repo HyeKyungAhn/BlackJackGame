@@ -3,15 +3,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GameAssistant {
-    private static int betMin;
-    private static final int BETMAX = 2100000000;
+    private int betMin;
+    private static final int BET_MAX = 2100000000;
     private static final boolean SETTING_SUCCESS = true;
     private static final boolean SETTING_FAIL = false;
-    private static final boolean FINISH_ROUND = true;
+    private static final boolean FINISH_GAME = true;
     private static final boolean CONTINUE = false;
 
-    private GameAssistant(){}
-    public static GameAssistant getGameAssistant(){ return new GameAssistant(); }
 
     public void initRoleCard(Deck deck, List<Role> roles) {
 
@@ -76,20 +74,21 @@ public class GameAssistant {
     }
 
     public boolean setBetting(Player player){
-        if(betMin > Player.getMoney()){
+//        System.out.println("betMin : " + betMin + ", playerMoney : " + player.getMoney());
+        if(betMin > player.getMoney()){
             System.out.println("배팅 금액은 전판의 최소 배팅 금액 이상이어야 합니다.");
             System.out.println("배팅 금액 부족으로 게임을 종료합니다.");
             return SETTING_FAIL;
         }
 
-        setTableLimit();
-        player.bet(betMin, BETMAX);
+        setTableLimit(player);
+        player.bet(betMin, BET_MAX);
         return SETTING_SUCCESS;
     }
 
-    private void setTableLimit() {
+    private void setTableLimit(Player player) {
         int betMin;
-        int money = Player.getMoney();
+        int money = player.getMoney();
 
         if(money > 1000000000){
             betMin = 1000000000;
@@ -115,40 +114,40 @@ public class GameAssistant {
             betMin = 100;
         }
 
-        if(GameAssistant.betMin !=0 && GameAssistant.betMin != betMin){
+        if(this.betMin != 0 && this.betMin != betMin){
             System.out.println("배팅 최소 금액이 상향조정 되었습니다.");
         }
-        GameAssistant.betMin = betMin;
+        this.betMin = betMin;
 
         System.out.println("수중의 돈 : " + money);
-        System.out.println("최소 베팅머니는 " + GameAssistant.betMin + ", 최대 베팅머니는 21억입니다.");
+        System.out.println("최소 베팅머니는 " + betMin + ", 최대 베팅머니는 21억입니다.");
         System.out.println("테이블의 베팅 금액 한도는 21억입니다.");
     }
 
     public void playerWin(Player player){
         System.out.println("Winner winner chicken dinner!");
-        if(!Player.isBlackJack()){
-            giveWinnings(player, Player.isInsured(), 2);
+        if(!player.isBlackJack()){
+            giveWinnings(player, player.isInsured(), 2);
         } else {
-            if(!Player.isFirstTurnBJ()){
-                giveWinnings(player, Player.isInsured(), 2.5);
+            if(!player.isFirstTurnBJ()){
+                giveWinnings(player, player.isInsured(), 2.5);
             } else {
-                if(Player.isTakeEvenMoney()){
-                    giveWinnings(player, Player.isInsured(), 2.5);
+                if(player.isEvenMoney()){
+                    giveWinnings(player, player.isInsured(), 2.5);
                 } else {
-                    giveWinnings(player, Player.isInsured(), 2);
+                    giveWinnings(player, player.isInsured(), 2);
                 }
             }
         }
     }
 
     private void giveWinnings(Player player, boolean insured, double rate) {
-        System.out.println("player : " + player + ", isInsured : " + insured + ", rate : " + rate);
+//        System.out.println("player : " + player.getBetMoney() + ", isInsured : " + insured + ", rate : " + rate);
         if(insured){
-            int insurance = Player.getBetMoney()/2;
-            player.receiveWinning((int) (Player.getBetMoney() * rate - insurance));
+            int insurance = player.getBetMoney()/2;
+            player.receiveWinning((int) (player.getBetMoney() * rate - insurance));
         } else {
-            player.receiveWinning((int) (Player.getBetMoney() * rate));
+            player.receiveWinning((int) (player.getBetMoney() * rate));
         }
     }
 
@@ -170,15 +169,13 @@ public class GameAssistant {
     }
 
     private void initValues(Player player, Dealer dealer) {
-        //money 제외
-        // player : cards, insured, count, dd, takeEve nMoney, FisrtTurnBJ, BlackJack, betMoney
-        // dealer : cards, hiddenCard, count
         player.initValues();
         dealer.initValues();
     }
 
     public void score(Player player, int dealerCount) {
-        int playerCount = Player.getCount();
+        int playerCount = player.getCount();
+        System.out.println("playerCount : " + playerCount + ", dealerCount : " + dealerCount);
         if(isBlackJack(dealerCount)){
             if(isBlackJack(playerCount)){
                 tie(player);
@@ -221,7 +218,7 @@ public class GameAssistant {
                 continue;
             }
 
-            Dealer.setCount(count);
+            dealer.setCount(count);
             break;
         } while (true);
     }

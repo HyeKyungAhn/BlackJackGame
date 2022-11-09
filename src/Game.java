@@ -12,7 +12,10 @@ public class Game {
 
     public void play(){
         System.out.println("게임을 시작합니다.");
-        initGame();
+        GameAssistant ga = new GameAssistant();
+        Deck deck = new Deck();
+        Player player = new Player();
+        Dealer dealer = new Dealer();
         Scanner scan = new Scanner(System.in);
 
         do {
@@ -20,19 +23,6 @@ public class Game {
             if(playerTurn(ga, player, dealer, scan)==FINISH_ROUND){ continue; }
             dealerTurn(ga, deck, dealer, player);
         } while(anotherGame(scan));
-    }
-
-    private void dealerTurn(GameAssistant ga, Deck deck, Dealer dealer, Player player) {
-        dealer.totalCardOpen();
-        ga.repeatHitTo17(dealer, deck);
-        dealer.open();
-
-        if(ga.isBusted(Dealer.getCount())){
-            ga.playerWin(player);
-            return;
-        }
-
-        ga.score(player, Dealer.getCount());
     }
 
     private boolean playerTurn(GameAssistant ga, Player player, Dealer dealer, Scanner scan) {
@@ -45,11 +35,11 @@ public class Game {
         }
 
         if(ga.isBlackJack(ga.count(player.getReceivedCards()))) {
-            Player.setFirstTurnBJ(true);
+            player.setFirstTurnBJ(true);
 
             System.out.println("이븐머니를 하시겠습니까? 네:1, 아니요:2");
             if(isYES(scan)){
-                Player.setTakeEvenMoney(true);
+                player.setEvenMoney(true);
                 return FINISH_TURN;
             }
 
@@ -86,13 +76,32 @@ public class Game {
                 }
 
                 if(ga.isBlackJack(count)){
-                    Player.setBlackJack(true);
+                    player.setBlackJack(true);
                     return FINISH_TURN;
                 }
             } else {
                 return FINISH_TURN;
             }
         } while (true);
+    }
+
+    private void dealerTurn(GameAssistant ga, Deck deck, Dealer dealer, Player player) {
+        dealer.totalCardOpen();
+        dealer.open();
+
+        if(ga.repeatHitTo17(dealer, deck)){
+            dealer.open();
+        }
+
+        if(ga.isBusted(dealer.getCount())){
+            ga.playerWin(player);
+            return;
+        }
+
+        int playerCount = ga.count(player.getReceivedCards());
+        player.setCount(playerCount);
+
+        ga.score(player, dealer.getCount());
     }
 
     private boolean isYES(Scanner scan) {
@@ -106,13 +115,6 @@ public class Game {
                 System.out.println("답을 확인하시고 다시 입력해주세요. (숫자만 다시 입력해주세요 ex. 네:1, 아니요:2)");
             }
         }
-    }
-
-    private void initGame() {
-        ga = GameAssistant.getGameAssistant();
-        deck = Deck.getDeck();
-        player = Player.playerEnter();
-        dealer = Dealer.dealerEnter();
     }
 
     private boolean anotherGame(Scanner scan){

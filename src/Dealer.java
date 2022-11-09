@@ -3,24 +3,20 @@ import java.util.List;
 
 
 public class Dealer extends Role{
-    private static List<Card> cards;
-    private static Card hiddenCard;
-    private static int count;
+    private List<Card> cards;
+    private Card hiddenCard;
+    private int count;
 
-    public static int getCount() {
+    public int getCount() {
         return count;
     }
 
-    public static void setCount(int count) {
-        Dealer.count = count;
+    public void setCount(int count) {
+        this.count = count;
     }
 
-    private Dealer(){
+    Dealer(){
         cards = new ArrayList<>();
-    }
-
-    public static Dealer dealerEnter(){
-        return new Dealer();
     }
 
     @Override
