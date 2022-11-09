@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,9 +23,6 @@ public class GameAssistant {
     }
 
     public int count(List<Card> cards){
-        //객체 생성못해. dealer나 player에 그대로 상속하는데, dealer나 player 둘 다 이 메서드를 사용해야하는데
-        // 둘중 한 객체를 골라서 이 메서드를 호출하는게 굉장히 이상한 모양새이다. 아예 다른 곳에 정의하는 것이 맞다. 꼭 여기 있어야할 필요가 없다.
-        // dealer, player 의 속성을 사용하지만.. 모르겠당..
         int count = 0;
         int aCount = 0;
 

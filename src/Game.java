@@ -1,10 +1,6 @@
 import java.util.Scanner;
 
 public class Game {
-    private Deck deck;
-    private Player player;
-    private Dealer dealer;
-    private GameAssistant ga;
     private static final boolean FINISH_TURN = false;
     private static final boolean FINISH_ROUND = true;
     private static final boolean FINISH_GAME = true;
@@ -21,12 +17,12 @@ public class Game {
 
         do {
             if(ga.initSet(ga, deck, player, dealer)==FINISH_GAME){ break; }
-            if(playerTurn(ga, player, dealer, scan)==FINISH_ROUND){ continue; }
+            if(playerTurn(ga, deck, player, dealer,  scan)==FINISH_ROUND){ continue; }
             dealerTurn(ga, deck, dealer, player);
-        } while(anotherGame(scan));
+        } while(anotherGame(player, scan));
     }
 
-    private boolean playerTurn(GameAssistant ga, Player player, Dealer dealer, Scanner scan) {
+    private boolean playerTurn(GameAssistant ga, Deck deck, Player player, Dealer dealer, Scanner scan) {
 
         if(ga.isDealerCardA(dealer)){
             System.out.println("딜러의 카드가 A 입니다. 인셔런스를 지불하시겠습니까? 네:1, 아니요:2");
@@ -120,7 +116,8 @@ public class Game {
         }
     }
 
-    private boolean anotherGame(Scanner scan){
+    private boolean anotherGame(Player player, Scanner scan){
+        System.out.println("현재 가진 돈은 " + player.getMoney() + "입니다.");
         System.out.println("게임을 계속 진행하시겠습니까?  네:1, 아니요:2");
 
         if(isYES(scan)){
