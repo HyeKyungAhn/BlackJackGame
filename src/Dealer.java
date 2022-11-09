@@ -52,7 +52,7 @@ public class Dealer extends Role{
         System.out.println("Dealer 카드: " + cards);
     }
 
-    public void totalOpen(){
+    public void totalCardOpen(){
         System.out.println("딜러카드를 오픈합니다.");
         if(null==hiddenCard){
             System.out.println("숨겨진 딜러카드가 없습니다.");
@@ -60,10 +60,5 @@ public class Dealer extends Role{
         }
 
         cards.set(0, hiddenCard);
-        System.out.println("Dealer 카드: " + cards);//히든카드 초기화 필요
-    }
-
-    public boolean isUnder17(int count){
-        return count < 17;
     }
 }

@@ -41,6 +41,8 @@ public class Player extends Role{
         Player.insured = insured;
     }
 
+    public static boolean isDoubleDown() { return doubleDown; }
+
     public static void setDoubleDown(boolean doubleDown) {
         Player.doubleDown = doubleDown;
     }

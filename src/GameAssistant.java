@@ -211,5 +211,23 @@ public class GameAssistant {
     private void tie(Player player) {
 
     }
+
+    public void repeatHitTo17(Dealer dealer, Deck deck){
+        do{
+            int count = count(dealer.getReceivedCards());
+
+            if(isUnder17(count)){
+                dealer.hit(deck.giveOneCard());
+                continue;
+            }
+
+            Dealer.setCount(count);
+            break;
+        } while (true);
+    }
+
+    public boolean isUnder17(int count){
+        return count < 17;
+    }
 }
 

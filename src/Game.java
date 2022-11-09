@@ -13,40 +13,19 @@ public class Game {
     public void play(){
         System.out.println("게임을 시작합니다.");
         initGame();
+        Scanner scan = new Scanner(System.in);
 
         do {
             if(ga.initSet(ga, deck, player, dealer)==FINISH_ROUND){ break; }
-            if(playerTurn(ga, player, dealer)==FINISH_ROUND){ continue; }
+            if(playerTurn(ga, player, dealer, scan)==FINISH_ROUND){ continue; }
             dealerTurn(ga, deck, dealer, player);
-        } while(anotherGame());
-    }
-
-    private boolean anotherGame(){
-        System.out.println("게임을 계속 진행하시겠습니까?  네:1, 아니요:2");
-
-        if(isYES()){
-            System.out.println("계속해서 게임을 진행합니다.");
-            return true;
-        }
-        System.out.println("게임을 종료합니다.");
-        return false;
+        } while(anotherGame(scan));
     }
 
     private void dealerTurn(GameAssistant ga, Deck deck, Dealer dealer, Player player) {
-        dealer.totalOpen();
-
-        do{
-            int count = ga.count(dealer.getReceivedCards());
-            if(dealer.isUnder17(count)){
-                Card card = deck.giveOneCard();
-                dealer.hit(card);
-                continue;
-            }
-
-            Dealer.setCount(count);
-            dealer.open(); //17이 넘을 때 두번 open됨
-            break;
-        } while(true);
+        dealer.totalCardOpen();
+        ga.repeatHitTo17(dealer, deck);
+        dealer.open();
 
         if(ga.isBusted(Dealer.getCount())){
             ga.playerWin(player);
@@ -56,21 +35,20 @@ public class Game {
         ga.score(player, Dealer.getCount());
     }
 
-    private boolean playerTurn(GameAssistant ga, Player player, Dealer dealer) {
+    private boolean playerTurn(GameAssistant ga, Player player, Dealer dealer, Scanner scan) {
 
         if(ga.isDealerCardA(dealer)){
             System.out.println("딜러의 카드가 A 입니다. 인셔런스를 지불하시겠습니까? 네:1, 아니요:2");
-            if(isYES()){
+            if(isYES(scan)){
                 player.insure();
             }
         }
 
-        //isBj()안에 count()를 내장? 그럴 필요 없을 듯? count를 저장해서 계속 사용하는 경우도 있음 그러나.. 일단 내장해서 만들자
         if(ga.isBlackJack(ga.count(player.getReceivedCards()))) {
             Player.setFirstTurnBJ(true);
 
             System.out.println("이븐머니를 하시겠습니까? 네:1, 아니요:2");
-            if(isYES()){
+            if(isYES(scan)){
                 Player.setTakeEvenMoney(true);
                 return FINISH_TURN;
             }
@@ -80,9 +58,8 @@ public class Game {
         }
 
         System.out.println("더블다운을 하시겠습니까? 네:1, 아니요:2");
-        if(isYES()){
-            Card card = deck.giveOneCard();
-            player.hit(card);
+        if(isYES(scan)){
+            player.hit(deck.giveOneCard());
             player.open();
             int count = ga.count(player.getReceivedCards());
 
@@ -98,18 +75,17 @@ public class Game {
 
         do {
             System.out.println("한 장 더 받으시겠습니까? 네:1, 아니요:2");
-            if(isYES()){
-                Card card = deck.giveOneCard();
-                player.hit(card);
+            if(isYES(scan)){
+                player.hit(deck.giveOneCard());
                 player.open();
+                int count = ga.count(player.getReceivedCards());
 
-                int playerCount = ga.count(player.getReceivedCards());
-                if(ga.isBusted(playerCount)){
+                if(ga.isBusted(count)){
                     ga.playerLoose(player);
                     return FINISH_ROUND;
                 }
 
-                if(ga.isBlackJack(playerCount)){
+                if(ga.isBlackJack(count)){
                     Player.setBlackJack(true);
                     return FINISH_TURN;
                 }
@@ -119,8 +95,7 @@ public class Game {
         } while (true);
     }
 
-    private boolean isYES() {
-        Scanner scan = new Scanner(System.in);
+    private boolean isYES(Scanner scan) {
         while(true){
             int answer = scan.nextInt();
             if(answer==YES){
@@ -138,5 +113,16 @@ public class Game {
         deck = Deck.getDeck();
         player = Player.playerEnter();
         dealer = Dealer.dealerEnter();
+    }
+
+    private boolean anotherGame(Scanner scan){
+        System.out.println("게임을 계속 진행하시겠습니까?  네:1, 아니요:2");
+
+        if(isYES(scan)){
+            System.out.println("계속해서 게임을 진행합니다.");
+            return true;
+        }
+        System.out.println("게임을 종료합니다.");
+        return false;
     }
 }
