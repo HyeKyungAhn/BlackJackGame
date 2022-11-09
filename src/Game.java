@@ -7,6 +7,7 @@ public class Game {
     private GameAssistant ga;
     private static final boolean FINISH_TURN = false;
     private static final boolean FINISH_ROUND = true;
+    private static final boolean FINISH_GAME = true;
     private static final int YES = 1;
     private static final int NO = 2;
 
@@ -19,7 +20,7 @@ public class Game {
         Scanner scan = new Scanner(System.in);
 
         do {
-            if(ga.initSet(ga, deck, player, dealer)==FINISH_ROUND){ break; }
+            if(ga.initSet(ga, deck, player, dealer)==FINISH_GAME){ break; }
             if(playerTurn(ga, player, dealer, scan)==FINISH_ROUND){ continue; }
             dealerTurn(ga, deck, dealer, player);
         } while(anotherGame(scan));
@@ -47,20 +48,22 @@ public class Game {
             return FINISH_ROUND;
         }
 
-        System.out.println("더블다운을 하시겠습니까? 네:1, 아니요:2");
-        if(isYES(scan)){
-            player.hit(deck.giveOneCard());
-            player.open();
-            int count = ga.count(player.getReceivedCards());
+        if(ga.canDoubleDown(player)){
+            System.out.println("더블다운을 하시겠습니까? 네:1, 아니요:2");
 
-            if(ga.isBusted(count)){
-                ga.playerLoose(player);
-                return FINISH_ROUND;
+            if(isYES(scan)){
+                player.doubleDown();
+                player.hit(deck.giveOneCard());
+                player.open();
+                int count = ga.count(player.getReceivedCards());
+
+                if(ga.isBusted(count)){
+                    ga.playerLoose(player);
+                    return FINISH_ROUND;
+                }
+
+                return FINISH_TURN;
             }
-
-            Player.setCount(count); //필요할까? oo
-            Player.setDoubleDown(true);
-            return FINISH_TURN;
         }
 
         do {

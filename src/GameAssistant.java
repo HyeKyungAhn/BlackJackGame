@@ -160,7 +160,7 @@ public class GameAssistant {
         initValues(player, dealer);
 
         if(ga.setBetting(player)==SETTING_FAIL){
-            return FINISH_ROUND;
+            return FINISH_GAME;
         }
 
         initRoleCard(deck, Arrays.asList(player, dealer));
@@ -192,6 +192,7 @@ public class GameAssistant {
 
         if(isTie(playerCount, dealerCount)){
             tie(player);
+            return;
         }
 
         playerLoose(player);
@@ -206,14 +207,16 @@ public class GameAssistant {
     }
 
     private void tie(Player player) {
-
+        giveWinnings(player, player.isInsured(), 1);
     }
 
-    public void repeatHitTo17(Dealer dealer, Deck deck){
+    public boolean repeatHitTo17(Dealer dealer, Deck deck){
+        boolean repeatHit = false;
         do{
             int count = count(dealer.getReceivedCards());
 
             if(isUnder17(count)){
+                repeatHit = true;
                 dealer.hit(deck.giveOneCard());
                 continue;
             }
@@ -221,10 +224,17 @@ public class GameAssistant {
             dealer.setCount(count);
             break;
         } while (true);
+        return repeatHit;
     }
 
     public boolean isUnder17(int count){
         return count < 17;
+    }
+
+    public boolean canDoubleDown(Player player) {
+        int betMoney = player.getBetMoney();
+        int playerMoney = player.getMoney();
+        return playerMoney >= betMoney;
     }
 }
 

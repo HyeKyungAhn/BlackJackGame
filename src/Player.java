@@ -6,7 +6,6 @@ public class Player extends Role{
     private int money;
     private int betMoney = 0;
     private boolean insured = false;
-    private boolean doubleDown;
     private boolean EvenMoney;
     private boolean firstTurnBJ;
     private boolean blackJack;
@@ -27,12 +26,6 @@ public class Player extends Role{
     public boolean isInsured() { return insured; }
 
     public void setInsured(boolean insured) { this.insured = insured; }
-
-    public static boolean isDoubleDown() { return doubleDown; }
-
-    public static void setDoubleDown(boolean doubleDown) {
-        Player.doubleDown = doubleDown;
-    }
 
     public boolean isEvenMoney() {
         return EvenMoney;
@@ -77,7 +70,6 @@ public class Player extends Role{
         betMoney = 0;
         insured = false;
         count = 0;
-        doubleDown = false;
         EvenMoney = false;
         firstTurnBJ = false;
         blackJack = false;
@@ -119,17 +111,9 @@ public class Player extends Role{
         } while(true);
     }
 
-    public void evenMoney(){
-
-    }
-
-    public boolean doubleDown(){
-        if(money>=betMoney){
-            money -= betMoney;
-            betMoney *= 2;
-            return true;
-        }
-        return false;
+    public void doubleDown(){
+        money -= betMoney;
+        betMoney *= 2;
     }
 
     public void receiveWinning(int winning){
